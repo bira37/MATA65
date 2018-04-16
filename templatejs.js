@@ -9,7 +9,12 @@ function run(){
 	
 	document.getElementById("WebGL-output").appendChild(renderer.domElement);
 	
-	renderer.clear();
-	renderer.render(scene, camera);
+	function animate(){
+		requestAnimationFrame(animate);
+		renderer.clear();
+		renderer.render(scene, camera);
+	}
+			
+	animate();
 
 }

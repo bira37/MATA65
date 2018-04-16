@@ -69,6 +69,9 @@ function init() {
 	var triangleMesh = new THREE.Mesh(triangleGeometry, triangleMaterial); 
 	
 	scene.add( triangleMesh );	
+	
+	triangleMesh.rotation.x += 0.2;
+	triangleMesh.rotation.y -= 0.2;
 		
 	renderer.clear();
 	renderer.render(scene, camera);
