@@ -23,7 +23,7 @@ function init() {
 	
 	// Load Mesh
 	var loader = new THREE.OBJLoader();
-	loader.load('../../Assets/Models/teapot.obj', loadMesh);
+	loader.load('../Assets/Models/teapot.obj', loadMesh);
 
 	renderer.clear();
 	// Global Axis
