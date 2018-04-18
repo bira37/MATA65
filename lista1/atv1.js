@@ -8,7 +8,7 @@ function run(){
 	
 	renderer.setClearColor(new THREE.Color(0.0, 0.0, 0.0));
 	
-	var camera = new THREE.OrthographicCamera(-2.0, 2.0, 2.0, -2.0, -2.0, 2.0);
+	var camera = new THREE.OrthographicCamera(-1.0, 1.0, 1.0, -1.0, -1.0, 1.0);
 	
 	scene.add(camera);
 	
@@ -16,7 +16,7 @@ function run(){
 	
 	var gotaGeometry = new THREE.Geometry();
 	
-	var numVertices = 20;
+	var numVertices = 30;
 	
 	for(i=0; i<=Math.PI; i+= Math.PI/numVertices){
 		var z = Math.cos(i);
@@ -58,7 +58,7 @@ function run(){
 		}
 	}
 	
-	var gotaMaterial = new THREE.MeshBasicMaterial({vertexColors: THREE.VertexColors, wireframe: false});
+	var gotaMaterial = new THREE.MeshBasicMaterial({vertexColors: THREE.VertexColors, wireframe: true});
 	
 	var gotaMesh = new THREE.Mesh(gotaGeometry, gotaMaterial);
 	
