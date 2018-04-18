@@ -53,16 +53,16 @@ function run(){
 	cylinderGeometry.vertices.push(new THREE.Vector3(0.0, 0.0, 0.9));
 	
 	for(i = 0; i<100; i++){
-		cylinderGeometry.faces.push(new THREE.Face3(202, i, i+1));
-	}
-	cylinderGeometry.faces.push(new THREE.Face3(202, 100, 0));
-	
-	for(i = 101; i<201; i++){
 		cylinderGeometry.faces.push(new THREE.Face3(203, i, i+1));
 	}
-	cylinderGeometry.faces.push(new THREE.Face3(203, 201, 101));
+	cylinderGeometry.faces.push(new THREE.Face3(203, 100, 0));
 	
-	var cylinderMaterial = new THREE.MeshBasicMaterial({vertexColors: THREE.VertexColors, color: 0x33cc33, side: THREE.DoubleSide, wireframe:false});
+	for(i = 101; i<201; i++){
+		cylinderGeometry.faces.push(new THREE.Face3(202, i, i+1));
+	}
+	cylinderGeometry.faces.push(new THREE.Face3(202, 201, 101));
+	
+	var cylinderMaterial = new THREE.MeshBasicMaterial({vertexColors: THREE.VertexColors, color: 0x33cc33, side: THREE.DoubleSide, wireframe:true});
 	
 	var cylinderMesh = new THREE.Mesh(cylinderGeometry, cylinderMaterial);
 	
