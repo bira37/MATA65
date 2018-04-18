@@ -16,7 +16,7 @@ function run(){
 	
 	var gotaGeometry = new THREE.Geometry();
 	
-	var numVertices = 30;
+	var numVertices = 70;
 	
 	for(i=0; i<=Math.PI; i+= Math.PI/numVertices){
 		var z = Math.cos(i);
@@ -28,37 +28,29 @@ function run(){
 		if(i == 0) continue;
 		for(p1 = gotaGeometry.vertices.length-2*(numVertices+1), p2 = gotaGeometry.vertices.length-(numVertices+1); p2 < gotaGeometry.vertices.length; p1++, p2++){
 			if(p2 == gotaGeometry.vertices.length-1){
-				gotaGeometry.faces.push(new THREE.Face3(p1, gotaGeometry.vertices.length-2*(numVertices+1), p2));
-				gotaGeometry.faces[gotaGeometry.faces.length-1].vertexColors[0] = new THREE.Color(0.0, 0.0, 1.0);
-				gotaGeometry.faces[gotaGeometry.faces.length-1].vertexColors[1] = new THREE.Color(0.0, 0.0, 1.0);
-				gotaGeometry.faces[gotaGeometry.faces.length-1].vertexColors[2] = new THREE.Color(0.0, 0.0, 1.0);
-				gotaGeometry.faces.push(new THREE.Face3(p1, gotaGeometry.vertices.length-(numVertices+1), p2));
-				gotaGeometry.faces[gotaGeometry.faces.length-1].vertexColors[0] = new THREE.Color(0.0, 0.0, 1.0);
-				gotaGeometry.faces[gotaGeometry.faces.length-1].vertexColors[1] = new THREE.Color(0.0, 0.0, 1.0);
-				gotaGeometry.faces[gotaGeometry.faces.length-1].vertexColors[2] = new THREE.Color(0.0, 0.0, 1.0);
-				gotaGeometry.faces.push(new THREE.Face3(p1, gotaGeometry.vertices.length-2*(numVertices+1), gotaGeometry.vertices.length-(numVertices+1)));
-				gotaGeometry.faces[gotaGeometry.faces.length-1].vertexColors[0] = new THREE.Color(0.0, 0.0, 1.0);
-				gotaGeometry.faces[gotaGeometry.faces.length-1].vertexColors[1] = new THREE.Color(0.0, 0.0, 1.0);
-				gotaGeometry.faces[gotaGeometry.faces.length-1].vertexColors[2] = new THREE.Color(0.0, 0.0, 1.0);
+				gotaGeometry.faces.push(new THREE.Face3(p2, gotaGeometry.vertices.length-(numVertices+1), p1));
+				//gotaGeometry.faces[gotaGeometry.faces.length-1].vertexColors[0] = new THREE.Color(0.0, 0.0, 1.0);
+				//gotaGeometry.faces[gotaGeometry.faces.length-1].vertexColors[1] = new THREE.Color(0.0, 0.0, 1.0);
+				//gotaGeometry.faces[gotaGeometry.faces.length-1].vertexColors[2] = new THREE.Color(0.0, 0.0, 1.0);
+				gotaGeometry.faces.push(new THREE.Face3(gotaGeometry.vertices.length-(numVertices+1), gotaGeometry.vertices.length-2*(numVertices+1), p1));
+				//gotaGeometry.faces[gotaGeometry.faces.length-1].vertexColors[0] = new THREE.Color(0.0, 0.0, 1.0);
+			  //gotaGeometry.faces[gotaGeometry.faces.length-1].vertexColors[1] = new THREE.Color(0.0, 0.0, 1.0);
+				//gotaGeometry.faces[gotaGeometry.faces.length-1].vertexColors[2] = new THREE.Color(0.0, 0.0, 1.0);
 			}
 			else {
-				gotaGeometry.faces.push(new THREE.Face3(p1, p1+1, p2));
-				gotaGeometry.faces[gotaGeometry.faces.length-1].vertexColors[0] = new THREE.Color(0.0, 0.0, 1.0);
-				gotaGeometry.faces[gotaGeometry.faces.length-1].vertexColors[1] = new THREE.Color(0.0, 0.0, 1.0);
-				gotaGeometry.faces[gotaGeometry.faces.length-1].vertexColors[2] = new THREE.Color(0.0, 0.0, 1.0);
-				gotaGeometry.faces.push(new THREE.Face3(p1, p2+1, p2));
-				gotaGeometry.faces[gotaGeometry.faces.length-1].vertexColors[0] = new THREE.Color(0.0, 0.0, 1.0);
-				gotaGeometry.faces[gotaGeometry.faces.length-1].vertexColors[1] = new THREE.Color(0.0, 0.0, 1.0);
-				gotaGeometry.faces[gotaGeometry.faces.length-1].vertexColors[2] = new THREE.Color(0.0, 0.0, 1.0);
-				gotaGeometry.faces.push(new THREE.Face3(p1, p1+1, p2+1));
-				gotaGeometry.faces[gotaGeometry.faces.length-1].vertexColors[0] = new THREE.Color(0.0, 0.0, 1.0);
-				gotaGeometry.faces[gotaGeometry.faces.length-1].vertexColors[1] = new THREE.Color(0.0, 0.0, 1.0);
-				gotaGeometry.faces[gotaGeometry.faces.length-1].vertexColors[2] = new THREE.Color(0.0, 0.0, 1.0);
+				gotaGeometry.faces.push(new THREE.Face3(p2, p2+1, p1));
+				//gotaGeometry.faces[gotaGeometry.faces.length-1].vertexColors[0] = new THREE.Color(0.0, 0.0, 0.6);
+				///gotaGeometry.faces[gotaGeometry.faces.length-1].vertexColors[1] = new THREE.Color(0.0, 0.0, 0.6);
+				//gotaGeometry.faces[gotaGeometry.faces.length-1].vertexColors[2] = new THREE.Color(0.0, 0.0, 1.0);
+				gotaGeometry.faces.push(new THREE.Face3(p2+1, p1+1, p1));
+				//gotaGeometry.faces[gotaGeometry.faces.length-1].vertexColors[0] = new THREE.Color(0.0, 0.0, 1.0);
+				//gotaGeometry.faces[gotaGeometry.faces.length-1].vertexColors[1] = new THREE.Color(0.0, 0.0, 1.0);
+				//gotaGeometry.faces[gotaGeometry.faces.length-1].vertexColors[2] = new THREE.Color(0.0, 0.0, 1.0);
 			}
 		}
 	}
 	
-	var gotaMaterial = new THREE.MeshBasicMaterial({vertexColors: THREE.VertexColors, wireframe: true});
+	var gotaMaterial = new THREE.MeshBasicMaterial({color: 0x4ddbff, vertexColors: THREE.NoColors, wireframe: true});
 	
 	var gotaMesh = new THREE.Mesh(gotaGeometry, gotaMaterial);
 	
