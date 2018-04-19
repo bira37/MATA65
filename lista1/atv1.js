@@ -72,6 +72,12 @@ function updateRotation(){
 	gotaMesh.rotation.z = options.rotz;
 }
 
+function updateOptionRotation(){
+	options.rotx = gotaMesh.rotation.x;
+	options.roty = gotaMesh.rotation.y;
+	options.rotz = gotaMesh.rotation.z;
+}
+
 //END OF UPDATE SECTION
 
 //BUILD SECTION
@@ -140,8 +146,12 @@ function buildCartesianColors(){
 	scene.remove(gotaMesh);
 	gotaMesh = new THREE.Mesh(new_geometry, new_material);
 	
+	updateMaterialColor();
+	updateRotation();
+	updateWireframe();
+	
 	scene.add(gotaMesh);
-	gotaMesh.rotation.x -= Math.PI/2;
+
 
 }
 
@@ -214,6 +224,7 @@ function run(){
 		gotaMesh.rotation.x += options.velrotx;
 		gotaMesh.rotation.y += options.velroty;
 		gotaMesh.rotation.z += options.velrotz;
+		updateOptionRotation();
 		
 		//adjust rotation panel
 		function adjust_gui_rotation_panel(){
