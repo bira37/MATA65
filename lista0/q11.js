@@ -71,7 +71,7 @@ function loadMesh(loadedMesh) {
 		c3 = (new_geometry.vertices[c].z - min_z)/(max_z - min_z);
 		new_geometry.faces[i].vertexColors[2] = new THREE.Color(c1,c2,c3);
 	}
-	new_material = new THREE.MeshBasicMaterial({color: 0xffff00, vertexColors: THREE.VertexColors, wireframe: true, side: THREE.DoubleSide});
+	new_material = new THREE.MeshBasicMaterial({color: 0xffffff, vertexColors: THREE.VertexColors, wireframe: false, side: THREE.DoubleSide});
 	mesh = new THREE.Mesh(new_geometry, new_material);
 	scene.add(mesh);
 }
