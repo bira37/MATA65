@@ -155,8 +155,38 @@ function buildCartesianColors(){
 
 }
 
-function buildSphericColor(){
+function buildSphericColors(){
 	
+	var new_geometry = new THREE.Geometry().copy(gotaMesh.geometry);
+	
+	for(i = 0; i<new_geometry.faces.length; i++){
+		var a = new_geometry.faces[i].a;
+		var b = new_geometry.faces[i].b;
+		var c = new_geometry.faces[i].c;
+		var c3 = Math.acos(new_geometry.vertices[a].z);
+		var c1 = new_geometry.vertices[a].x/(0.5*(1 - Math.cos(c3))*Math.sin(c3));
+		var c2 = 1.0;
+		new_geometry.faces[i].vertexColors[0] = new THREE.Color().setHSL(c1/2*Math.PI,c2,c3/Math.PI);
+		c3 = Math.acos(new_geometry.vertices[b].z);
+		c1 = new_geometry.vertices[b].x/(0.5*(1 - Math.cos(c3))*Math.sin(c3));
+		c2 = 1.0;
+		new_geometry.faces[i].vertexColors[1] = new THREE.Color().setHSL(c1/2*Math.PI,c2,c3/Math.PI);
+		c3 = Math.acos(new_geometry.vertices[c].z);
+		c1 = new_geometry.vertices[c].x/(0.5*(1 - Math.cos(c3))*Math.sin(c3));
+		c2 = 1.0;
+		new_geometry.faces[i].vertexColors[2] = new THREE.Color().setHSL(c1/2*Math.PI,c2,c3/Math.PI);
+	}
+	
+	new_material = new THREE.MeshBasicMaterial({color: gotaMesh.material.color, vertexColors: THREE.VertexColors, wireframe: gotaMesh.material.wireframe});
+	
+	scene.remove(gotaMesh);
+	gotaMesh = new THREE.Mesh(new_geometry, new_material);
+	
+	updateMaterialColor();
+	updateRotation();
+	updateWireframe();
+	
+	scene.add(gotaMesh);
 }
 
 //END OF BUILD SECTION
