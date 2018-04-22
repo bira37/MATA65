@@ -1,13 +1,14 @@
 var gotaMesh = new THREE.Mesh();
 var scene = new THREE.Scene();
 var renderer = new THREE.WebGLRenderer();
+var hslColors = [];
 
 //BEGIN OPTIONS FOR DAT GUI
 var options = {
 	velrotx: 0,
 	velroty: 0,
 	velrotz: 0,
-	rotx: - Math.PI/2,
+	rotx: 2*Math.PI - Math.PI/2,
 	roty: 0,
 	rotz: 0,
 	red_intensity: 77,
@@ -37,9 +38,10 @@ var options = {
 	},
 	
 	reset_rotation: function(){
-		gotaMesh.rotation.x = 2*Math.PI - Math.PI/2;
-		gotaMesh.rotation.y = 0;
-		gotaMesh.rotation.z = 0;
+		this.rotx = 2*Math.PI - Math.PI/2;
+		this.roty = 0;
+		this.rotz = 0;
+		initializeRotation();
 	},
 	
 	reset_default_color: function(){
@@ -67,9 +69,7 @@ function updateWireframe(){
 }
 
 function updateRotation(){
-	gotaMesh.rotation.x = options.rotx;
-	gotaMesh.rotation.y = options.roty;
-	gotaMesh.rotation.z = options.rotz;
+	gotaMesh.rotation.set(options.rotx, options.roty, options.rotz);
 }
 
 function updateOptionRotation(){
@@ -77,6 +77,10 @@ function updateOptionRotation(){
 	options.roty = gotaMesh.rotation.y;
 	options.rotz = gotaMesh.rotation.z;
 }
+
+function initializeRotation(){
+	gotaMesh.rotation.set(2*Math.PI - Math.PI/2, 0, 0);
+} 
 
 //END OF UPDATE SECTION
 
@@ -86,6 +90,7 @@ function buildGeometry(){
 	var gotaGeometry = new THREE.Geometry();
 	var vcnt = 0;
 	var layer = -1;
+	hslColors = [];
 	for(it=0; it<=options.numVertices; it++){
 		var i = it*Math.PI/options.numVertices;
 		var z = Math.cos(i);
@@ -96,6 +101,7 @@ function buildGeometry(){
 			var x = 0.5*(1 - Math.cos(i))*Math.sin(i)*Math.cos(j);	
 			var y = 0.5*(1 - Math.cos(i))*Math.sin(i)*Math.sin(j);
 		 	gotaGeometry.vertices.push(new THREE.Vector3(x,y,z));
+		 	hslColors.push(new THREE.Color().setHSL(i/Math.PI, 1.0, j/(2*Math.PI)));
 		}
 		if(it == 0) continue;
 		for(p1 = (layer-1)*vcnt, p2 = layer*vcnt; p2 < (layer+1)*vcnt-1; p1++, p2++){
@@ -163,18 +169,9 @@ function buildSphericColors(){
 		var a = new_geometry.faces[i].a;
 		var b = new_geometry.faces[i].b;
 		var c = new_geometry.faces[i].c;
-		var c3 = Math.acos(new_geometry.vertices[a].z);
-		var c1 = new_geometry.vertices[a].x/(0.5*(1 - Math.cos(c3))*Math.sin(c3));
-		var c2 = 1.0;
-		new_geometry.faces[i].vertexColors[0] = new THREE.Color().setHSL(c1/2*Math.PI,c2,c3/Math.PI);
-		c3 = Math.acos(new_geometry.vertices[b].z);
-		c1 = new_geometry.vertices[b].x/(0.5*(1 - Math.cos(c3))*Math.sin(c3));
-		c2 = 1.0;
-		new_geometry.faces[i].vertexColors[1] = new THREE.Color().setHSL(c1/2*Math.PI,c2,c3/Math.PI);
-		c3 = Math.acos(new_geometry.vertices[c].z);
-		c1 = new_geometry.vertices[c].x/(0.5*(1 - Math.cos(c3))*Math.sin(c3));
-		c2 = 1.0;
-		new_geometry.faces[i].vertexColors[2] = new THREE.Color().setHSL(c1/2*Math.PI,c2,c3/Math.PI);
+		new_geometry.faces[i].vertexColors[0] = hslColors[a];
+		new_geometry.faces[i].vertexColors[1] = hslColors[b];
+		new_geometry.faces[i].vertexColors[2] = hslColors[c];
 	}
 	
 	new_material = new THREE.MeshBasicMaterial({color: gotaMesh.material.color, vertexColors: THREE.VertexColors, wireframe: gotaMesh.material.wireframe});
@@ -205,11 +202,11 @@ function run(){
 	
 	buildGeometry(options.numVertices);
 	
-	buildMaterial(options.default_color, THREE.NoColors, true);
+	buildMaterial();
 	
 	//DO ALL UPDATES
 	updateMaterialColor();
-	updateRotation();
+	initializeRotation();
 	updateWireframe();
 	
 	scene.add(gotaMesh);
@@ -251,19 +248,19 @@ function run(){
 	
 	function animate(){
 		requestAnimationFrame(animate);
-		gotaMesh.rotation.x += options.velrotx;
-		gotaMesh.rotation.y += options.velroty;
-		gotaMesh.rotation.z += options.velrotz;
-		updateOptionRotation();
+		gotaMesh.rotation.set(options.rotx + options.velrotx, options.roty + options.velroty, options.rotz + options.velrotz);
+		options.rotx = gotaMesh.rotation.x;
+		options.roty = gotaMesh.rotation.y;
+		options.rotz = gotaMesh.rotation.z;
 		
-		//adjust rotation panel
+		//adjust rotation panel 
 		function adjust_gui_rotation_panel(){
-			if(gotaMesh.rotation.x < 2*Math.PI) gotaMesh.rotation.x += 2*Math.PI;
-			if(gotaMesh.rotation.x > 2*Math.PI) gotaMesh.rotation.x -= 2*Math.PI;
-			if(gotaMesh.rotation.y < 2*Math.PI) gotaMesh.rotation.y += 2*Math.PI;
-			if(gotaMesh.rotation.y > 2*Math.PI) gotaMesh.rotation.y -= 2*Math.PI;
-			if(gotaMesh.rotation.z < 2*Math.PI) gotaMesh.rotation.z += 2*Math.PI;
-			if(gotaMesh.rotation.z > 2*Math.PI) gotaMesh.rotation.z -= 2*Math.PI;
+			if(options.rotx < 2*Math.PI) options.rotx += 2*Math.PI;
+			if(options.rotx > 2*Math.PI) options.rotx -= 2*Math.PI;
+			if(options.roty < 2*Math.PI) options.roty += 2*Math.PI;
+			if(options.roty > 2*Math.PI) options.roty -= 2*Math.PI;
+			if(options.rotz < 2*Math.PI) options.rotz += 2*Math.PI;
+			if(options.rotz > 2*Math.PI) options.rotz -= 2*Math.PI;
 		}
 		adjust_gui_rotation_panel();
 		
