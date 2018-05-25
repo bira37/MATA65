@@ -36,25 +36,22 @@ function loadMesh(loadedMesh) {
 	
 	map_point.position.set(map_camera.position.x, 30, map_camera.position.z);
 	
-	scene.add(map_point);
+	//scene.add(map_point);
 	
-	player_camera.position.set((box.min.x + box.max.x)/2, 1.7, (box.min.z + box.max.z)/2);
+	player_camera.position.set((box.min.x + box.max.x)/2 + 15, 1.7, (box.min.z + box.max.z)/2);
 	
 	player.update();
 	
 	//Add point light Source
 	var pointLight1 = new THREE.PointLight(new THREE.Color(1.0, 1.0, 1.0));
 	pointLight1.distance = 0.0;
-	pointLight1.position.set(box.max.x*1.2, box.max.y*1.2, box.max.z*1.2);
+	pointLight1.position.set(box.max.x*1.5, box.max.y*3.0, box.max.z*1.5);
+	var sun_geometry = new THREE.SphereGeometry( 10, 32, 32 );
+	var sun_material = new THREE.MeshBasicMaterial( { color: 0xf7c224, wireframe : false } );
+	var sun = new THREE.Mesh(sun_geometry, sun_material);
+	sun.position.set(box.max.x*1.5, box.max.y*3.0, box.max.z*1.5);
 	scene.add(pointLight1);
-	
-	// Global Axis
-	var globalAxis = new THREE.AxisHelper	( Math.max(	(box.max.x - box.min.x),
-														(box.max.y - box.min.y),
-														(box.max.z - box.min.z)
-				  									  )
-											);
-	scene.add( globalAxis );
+	scene.add(sun);
 	
 };
 
@@ -67,7 +64,7 @@ function run(){
 	
 	renderer = new THREE.WebGLRenderer();
 
-	renderer.setClearColor(new THREE.Color(0.0, 0.0, 0.0));
+	renderer.setClearColor(0x54aee8);
 	renderer.setSize(1200, 600);
 	renderer.autoClear = false;
 
@@ -80,6 +77,7 @@ function run(){
 	back_camera = new THREE.PerspectiveCamera(60, 12/6, 0.1, 1000.0);
 	
 	player = new THREE.FirstPersonControls(player_camera, renderer.domElement);
+	player.noFly = true;
 	
 	//creating map point
 	var point_geometry = new THREE.SphereGeometry( 5, 32, 32 );
@@ -91,20 +89,25 @@ function run(){
 	loader.load('libs/city.obj', loadMesh);
 	
 	function render(){
-    player.update(clock.getDelta());
     if(city){
+      player.update(clock.getDelta());
+      console.log(player.moveForward);
+      console.log(player_camera.position.x);
       var player_direction = new THREE.Vector3();
       player_camera.getWorldDirection( player_direction );
       player_direction.multiplyScalar(-1);
       back_camera.position.set(player_camera.position.x, player_camera.position.y, player_camera.position.z);
       player_direction.add(back_camera.position);
       back_camera.lookAt(player_direction);
+      player_camera.getWorldDirection( player_direction );
       map_camera.position.set(player_camera.position.x, 15*box.max.y, player_camera.position.z);
       map_camera.lookAt(player_camera.position);
       map_point.position.set(map_camera.position.x, 30, map_camera.position.z);
       renderer.clear();
+      scene.add(map_point);
       renderer.setViewport(800, 0, 400, 200);
 		  renderer.render(scene, map_camera);
+		  scene.remove(map_point);
 		  renderer.setViewport(800, 200, 400, 400);
 		  renderer.render(scene, back_camera);
 		  renderer.setViewport(0, 0, 800, 600);
