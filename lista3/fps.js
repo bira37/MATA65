@@ -34,9 +34,7 @@ function loadMesh(loadedMesh) {
 	map_camera.position.z = (box.min.z + box.max.z)/2;
 	map_camera.up = new THREE.Vector3(1, 0, 0);
 	
-	map_point.position.set(map_camera.position.x, 30, map_camera.position.z);
-	
-	//scene.add(map_point);
+	map_point.position.set(map_camera.position.x, 10*box.max.y, map_camera.position.z);
 	
 	player_camera.position.set((box.min.x + box.max.x)/2 + 15, 1.7, (box.min.z + box.max.z)/2);
 	
@@ -46,7 +44,7 @@ function loadMesh(loadedMesh) {
 	var pointLight1 = new THREE.PointLight(new THREE.Color(1.0, 1.0, 1.0));
 	pointLight1.distance = 0.0;
 	pointLight1.position.set(box.max.x*1.5, box.max.y*3.0, box.max.z*1.5);
-	var sun_geometry = new THREE.SphereGeometry( 10, 32, 32 );
+	var sun_geometry = new THREE.SphereGeometry( 15, 32, 32 );
 	var sun_material = new THREE.MeshBasicMaterial( { color: 0xf7c224, wireframe : false } );
 	var sun = new THREE.Mesh(sun_geometry, sun_material);
 	sun.position.set(box.max.x*1.5, box.max.y*3.0, box.max.z*1.5);
@@ -72,15 +70,15 @@ function run(){
 	
 	map_camera = new THREE.PerspectiveCamera(15.0, 12/6, 0.1, 1000.0);
 	
-	player_camera = new THREE.PerspectiveCamera(60, 12/6, 0.1, 1000.0);
+	player_camera = new THREE.PerspectiveCamera(60, 4/2, 0.1, 1000.0);
 	
-	back_camera = new THREE.PerspectiveCamera(60, 12/6, 0.1, 1000.0);
+	back_camera = new THREE.PerspectiveCamera(60, 4/4, 0.1, 1000.0);
 	
 	player = new THREE.FirstPersonControls(player_camera, renderer.domElement);
 	player.noFly = true;
 	
 	//creating map point
-	var point_geometry = new THREE.SphereGeometry( 5, 32, 32 );
+	var point_geometry = new THREE.SphereGeometry( 1.5, 32, 32 );
 	var point_material = new THREE.MeshBasicMaterial( { color: 0xff0000 } );
 	map_point = new THREE.Mesh(point_geometry, point_material);
 	
@@ -91,8 +89,14 @@ function run(){
 	function render(){
     if(city){
       player.update(clock.getDelta());
-      console.log(player.moveForward);
-      console.log(player_camera.position.x);
+      
+      //adjust limits
+      player_camera.position.x = Math.min(player_camera.position.x, box.max.x);
+      player_camera.position.x = Math.max(player_camera.position.x, box.min.x);
+      player_camera.position.z = Math.min(player_camera.position.z, box.max.z);
+      player_camera.position.z = Math.max(player_camera.position.z, box.min.z);
+      
+      //update directions
       var player_direction = new THREE.Vector3();
       player_camera.getWorldDirection( player_direction );
       player_direction.multiplyScalar(-1);
@@ -102,7 +106,9 @@ function run(){
       player_camera.getWorldDirection( player_direction );
       map_camera.position.set(player_camera.position.x, 15*box.max.y, player_camera.position.z);
       map_camera.lookAt(player_camera.position);
-      map_point.position.set(map_camera.position.x, 30, map_camera.position.z);
+      map_point.position.set(map_camera.position.x, 10*box.max.y, map_camera.position.z);
+      
+      //render the scene
       renderer.clear();
       scene.add(map_point);
       renderer.setViewport(800, 0, 400, 200);
