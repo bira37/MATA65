@@ -70,7 +70,7 @@ function createGrayHistogram(texture){
   }
   
   for(let i = 1; i<256; i++) hist[i] += hist[i-1];
-  var data = new Uint8ClampedArray(4*256*256);
+  var data = new Uint8Array(4*256*256);
   for(let i = 0; i < 256; i++){
     for(let j = 0; j < 256; j++){
       let color = Math.floor(255*hist[getPixel(graydata,i,j).r]);
@@ -81,7 +81,32 @@ function createGrayHistogram(texture){
       data[pos+3] = 255;
     }
   }
-  eq_gray_texture = new THREE.DataTexture(data, graydata.width, graydata.height, THREE.RGBFormat);
+  eq_gray_texture = new THREE.DataTexture(data, graydata.width, graydata.height, THREE.RGBAFormat);
+  eq_gray_texture.needsUpdate = true;
+  eq_gray_texture.flipY = true;
+	gray_material = new THREE.MeshBasicMaterial({map: texture});
+	gray_image = new THREE.Mesh(plane_geometry, gray_material);
+	eq_gray_material = new THREE.MeshBasicMaterial({map: eq_gray_texture});
+	eq_gray_image = new THREE.Mesh(plane_geometry, eq_gray_material);
+	
+	
+	//include gray image
+  renderer.setViewport(0,512, 256,256);
+  scene.add(gray_image);
+  renderer.render(scene, camera);
+  scene.remove(gray_image);
+  
+  //include gray histogram
+  renderer.setViewport(0, 3*256, 256, 256);
+  for(let i=0; i<256; i++) scene.add(gray_histogram[i]);
+  renderer.render(scene, camera);
+  for(let i=0; i<256; i++) scene.remove(gray_histogram[i]);
+  
+  //include equalized gray image
+  renderer.setViewport(256, 512, 256, 256);
+  scene.add(eq_gray_image);
+  renderer.render(scene, camera);
+  scene.remove(eq_gray_image);
 }
 
 function createColorHistogram(texture){
@@ -172,6 +197,32 @@ function createColorHistogram(texture){
     color_histogram[256*2 + i] = new THREE.Line(geometry, material);
   }
   for(let i = 1; i<256; i++) hist[256*2 + i] += hist[256*2 + i-1];
+  
+  color_material = new THREE.MeshBasicMaterial({map: color_texture});
+	//eq_color_material = new THREE.MeshBasicMaterial({map: eq_color_texture});
+	color_image = new THREE.Mesh(plane_geometry, color_material);
+	//eq_color_image = new THREE.Mesh(plane_geometry, eq_color_material);
+	
+	renderer.setViewport(0,0, 256,256);
+  scene.add(color_image);
+  renderer.render(scene, camera);
+  scene.remove(color_image);
+  
+  //include red histogram
+  renderer.setViewport(0, 256, 128, 128);
+  for(let i=0; i<256; i++) scene.add(color_histogram[i]);
+  renderer.render(scene, camera);
+  for(let i=0; i<256; i++) scene.remove(color_histogram[i]);
+  //include green histogram
+  renderer.setViewport(128, 256, 128, 128);
+  for(let i=0; i<256; i++) scene.add(color_histogram[256*1 + i]);
+  renderer.render(scene, camera);
+  for(let i=0; i<256; i++) scene.remove(color_histogram[256*1 + i]);
+  //include blue histogram
+  renderer.setViewport(0, 256+128, 128, 128);
+  for(let i=0; i<256; i++) scene.add(color_histogram[256*2 + i]);
+  renderer.render(scene, camera);
+  for(let i=0; i<256; i++) scene.remove(color_histogram[256*2 + i]);
 }
   
 function run(){
@@ -183,7 +234,7 @@ function run(){
 	renderer.setClearColor(0);
 	renderer.setSize(3*256, 4*256);
 	renderer.autoClear = false;
-
+  renderer.clear();
 	document.getElementById("WebGL-output").appendChild(renderer.domElement);
 	
 	camera = new THREE.OrthographicCamera(0, 100, 100, 0, -1, 1);
@@ -195,60 +246,60 @@ function run(){
 	
 	color_texture = new THREE.TextureLoader().load( 'images/color.jpg', createColorHistogram );
 	gray_texture = new THREE.TextureLoader().load( 'images/grayscale.jpg', createGrayHistogram );
-	color_material = new THREE.MeshBasicMaterial({map: color_texture});
-	gray_material = new THREE.MeshBasicMaterial({map: gray_texture});
-	eq_color_material = new THREE.MeshBasicMaterial({map: eq_color_texture});
-	color_image = new THREE.Mesh(plane_geometry, color_material);
-	eq_color_image = new THREE.Mesh(plane_geometry, eq_color_material);
-	gray_image = new THREE.Mesh(plane_geometry, gray_material);
-	eq_gray_material = new THREE.MeshBasicMaterial({map: eq_gray_texture});
-	eq_gray_image = new THREE.Mesh(plane_geometry, eq_gray_material);
+	//color_material = new THREE.MeshBasicMaterial({map: color_texture});
+	//gray_material = new THREE.MeshBasicMaterial({map: gray_texture});
+	//eq_color_material = new THREE.MeshBasicMaterial({map: eq_color_texture});
+	//color_image = new THREE.Mesh(plane_geometry, color_material);
+	//eq_color_image = new THREE.Mesh(plane_geometry, eq_color_material);
+	//gray_image = new THREE.Mesh(plane_geometry, gray_material);
+	//eq_gray_material = new THREE.MeshBasicMaterial({map: eq_gray_texture});
+	//eq_gray_image = new THREE.Mesh(plane_geometry, eq_gray_material);
 	
-	function render(){ 
+	//function render(){ 
     //render the scene
-    renderer.clear();
+    //renderer.clear();
     
     //include color image
-    renderer.setViewport(0,0, 256,256);
-    scene.add(color_image);
-    renderer.render(scene, camera);
-    scene.remove(color_image);
+    //renderer.setViewport(0,0, 256,256);
+    //scene.add(color_image);
+    //renderer.render(scene, camera);
+    //scene.remove(color_image);
     
     //include red histogram
-    renderer.setViewport(0, 256, 128, 128);
-    for(let i=0; i<256; i++) scene.add(color_histogram[i]);
-    renderer.render(scene, camera);
-    for(let i=0; i<256; i++) scene.remove(color_histogram[i]);
+    //renderer.setViewport(0, 256, 128, 128);
+    //for(let i=0; i<256; i++) scene.add(color_histogram[i]);
+    //renderer.render(scene, camera);
+    //for(let i=0; i<256; i++) scene.remove(color_histogram[i]);
     //include green histogram
-    renderer.setViewport(128, 256, 128, 128);
-    for(let i=0; i<256; i++) scene.add(color_histogram[256*1 + i]);
-    renderer.render(scene, camera);
-    for(let i=0; i<256; i++) scene.remove(color_histogram[256*1 + i]);
+    //renderer.setViewport(128, 256, 128, 128);
+    //for(let i=0; i<256; i++) scene.add(color_histogram[256*1 + i]);
+    //renderer.render(scene, camera);
+    //for(let i=0; i<256; i++) scene.remove(color_histogram[256*1 + i]);
     //include blue histogram
-    renderer.setViewport(0, 256+128, 128, 128);
-    for(let i=0; i<256; i++) scene.add(color_histogram[256*2 + i]);
-    renderer.render(scene, camera);
-    for(let i=0; i<256; i++) scene.remove(color_histogram[256*2 + i]);
+    //renderer.setViewport(0, 256+128, 128, 128);
+    //for(let i=0; i<256; i++) scene.add(color_histogram[256*2 + i]);
+    //renderer.render(scene, camera);
+    //for(let i=0; i<256; i++) scene.remove(color_histogram[256*2 + i]);
     
     //include gray image
-    renderer.setViewport(0,512, 256,256);
-    scene.add(gray_image);
-    renderer.render(scene, camera);
-    scene.remove(gray_image);
+    //renderer.setViewport(0,512, 256,256);
+    //scene.add(gray_image);
+    //renderer.render(scene, camera);
+    //scene.remove(gray_image);
     
     //include gray histogram
-    renderer.setViewport(0, 3*256, 256, 256);
-    for(let i=0; i<256; i++) scene.add(gray_histogram[i]);
-    renderer.render(scene, camera);
-    for(let i=0; i<256; i++) scene.remove(gray_histogram[i]);
+    //renderer.setViewport(0, 3*256, 256, 256);
+    //for(let i=0; i<256; i++) scene.add(gray_histogram[i]);
+    //renderer.render(scene, camera);
+    //for(let i=0; i<256; i++) scene.remove(gray_histogram[i]);
     
     //include equalized gray image
-    renderer.setViewport(256, 512, 256, 256);
-    scene.add(eq_gray_image);
-    renderer.render(scene, camera);
-    scene.remove(eq_gray_image);
+    //renderer.setViewport(256, 512, 256, 256);
+    //scene.add(eq_gray_image);
+    //renderer.render(scene, camera);
+    //scene.remove(eq_gray_image);
     
-		requestAnimationFrame(render);
-	}
-  render();
+		//requestAnimationFrame(render);
+	//}
+  //render();
 }
