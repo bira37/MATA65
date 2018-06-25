@@ -337,7 +337,7 @@ function run(){
 	renderer = new THREE.WebGLRenderer();
 
 	renderer.setClearColor(0);
-	renderer.setSize(5*256, 2*256 +128);
+	renderer.setSize(5*256 + 32, 2*256 +128);
 	renderer.autoClear = false;
   renderer.clear();
 	document.getElementById("WebGL-output").appendChild(renderer.domElement);
@@ -355,25 +355,25 @@ function run(){
 	function render(){
 	  if(flag1 && flag2){ 
 	    //include gray image
-      renderer.setViewport(512+256,0, 256,256);
+      renderer.setViewport(512+256 + 16,0, 256,256);
       scene.add(gray_image);
       renderer.render(scene, camera);
       scene.remove(gray_image);
       
       //include gray histogram
-      renderer.setViewport(512+256, 256, 256, 128);
+      renderer.setViewport(512+256 + 16, 256, 256, 128);
       for(let i=0; i<256; i++) scene.add(gray_histogram[i]);
       renderer.render(scene, camera);
       for(let i=0; i<256; i++) scene.remove(gray_histogram[i]);
       
       //include equalized gray image
-      renderer.setViewport(512+512 + 16, 0, 256, 256);
+      renderer.setViewport(512+512 + 32, 0, 256, 256);
       scene.add(eq_gray_image);
       renderer.render(scene, camera);
       scene.remove(eq_gray_image);
       
       //include equalized gray histogram
-      renderer.setViewport(512+512 + 16, 256, 256, 128);
+      renderer.setViewport(512+512 + 32, 256, 256, 128);
       for(let i=0; i<256; i++) scene.add(eq_gray_histogram[i]);
       renderer.render(scene, camera);
       for(let i=0; i<256; i++) scene.remove(eq_gray_histogram[i]);
