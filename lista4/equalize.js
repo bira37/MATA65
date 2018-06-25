@@ -20,6 +20,8 @@ var gray_histogram = [];
 var eq_gray_histogram = [];
 var eq_color_histogram = [];
 var color_histogram = [];
+var flag1 = false;
+var flag2 = false;
 
 function getImageData( image ) {
     var canvas = document.createElement( 'canvas' );
@@ -122,30 +124,8 @@ function createGrayHistogram(texture){
 	eq_gray_material = new THREE.MeshBasicMaterial({map: eq_gray_texture});
 	eq_gray_image = new THREE.Mesh(plane_geometry, eq_gray_material);
 	
+	flag1 = true;
 	
-	//include gray image
-  renderer.setViewport(0,512, 256,256);
-  scene.add(gray_image);
-  renderer.render(scene, camera);
-  scene.remove(gray_image);
-  
-  //include gray histogram
-  renderer.setViewport(0, 3*256, 256, 256);
-  for(let i=0; i<256; i++) scene.add(gray_histogram[i]);
-  renderer.render(scene, camera);
-  for(let i=0; i<256; i++) scene.remove(gray_histogram[i]);
-  
-  //include equalized gray image
-  renderer.setViewport(256, 512, 256, 256);
-  scene.add(eq_gray_image);
-  renderer.render(scene, camera);
-  scene.remove(eq_gray_image);
-  
-  //include equalized gray histogram
-  renderer.setViewport(256, 3*256, 256, 256);
-  for(let i=0; i<256; i++) scene.add(eq_gray_histogram[i]);
-  renderer.render(scene, camera);
-  for(let i=0; i<256; i++) scene.remove(eq_gray_histogram[i]);
 }
 
 function createColorHistogram(texture){
@@ -347,49 +327,7 @@ function createColorHistogram(texture){
 	color_image = new THREE.Mesh(plane_geometry, color_material);
 	eq_color_image = new THREE.Mesh(plane_geometry, eq_color_material);
 	
-	//include color image
-	renderer.setViewport(0,0, 256,256);
-  scene.add(color_image);
-  renderer.render(scene, camera);
-  scene.remove(color_image);
-  
-  //include red histogram
-  renderer.setViewport(0, 256, 128, 128);
-  for(let i=0; i<256; i++) scene.add(color_histogram[i]);
-  renderer.render(scene, camera);
-  for(let i=0; i<256; i++) scene.remove(color_histogram[i]);
-  //include green histogram
-  renderer.setViewport(128, 256, 128, 128);
-  for(let i=0; i<256; i++) scene.add(color_histogram[256*1 + i]);
-  renderer.render(scene, camera);
-  for(let i=0; i<256; i++) scene.remove(color_histogram[256*1 + i]);
-  //include blue histogram
-  renderer.setViewport(0, 256+128, 128, 128);
-  for(let i=0; i<256; i++) scene.add(color_histogram[256*2 + i]);
-  renderer.render(scene, camera);
-  for(let i=0; i<256; i++) scene.remove(color_histogram[256*2 + i]);
-  
-  //include equalized color image
-  renderer.setViewport(256, 0, 256, 256);
-  scene.add(eq_color_image);
-  renderer.render(scene, camera);
-  scene.remove(eq_color_image);
-  
-  //include equalized red histogram
-  renderer.setViewport(256, 256, 128, 128);
-  for(let i=0; i<256; i++) scene.add(eq_color_histogram[i]);
-  renderer.render(scene, camera);
-  for(let i=0; i<256; i++) scene.remove(eq_color_histogram[i]);
-  //include equalized green histogram
-  renderer.setViewport(128 + 256, 256, 128, 128);
-  for(let i=0; i<256; i++) scene.add(eq_color_histogram[256*1 + i]);
-  renderer.render(scene, camera);
-  for(let i=0; i<256; i++) scene.remove(eq_color_histogram[256*1 + i]);
-  //include equalized blue histogram
-  renderer.setViewport(256, 256+128, 128, 128);
-  for(let i=0; i<256; i++) scene.add(eq_color_histogram[256*2 + i]);
-  renderer.render(scene, camera);
-  for(let i=0; i<256; i++) scene.remove(eq_color_histogram[256*2 + i]);
+	flag2 = true;
 }
   
 function run(){
@@ -413,4 +351,78 @@ function run(){
 	
 	color_texture = new THREE.TextureLoader().load( 'images/color.jpg', createColorHistogram );
 	gray_texture = new THREE.TextureLoader().load( 'images/grayscale.jpg', createGrayHistogram );
+	
+	function render(){
+	  if(flag1 && flag2){ 
+	    //include gray image
+      renderer.setViewport(0,512, 256,256);
+      scene.add(gray_image);
+      renderer.render(scene, camera);
+      scene.remove(gray_image);
+      
+      //include gray histogram
+      renderer.setViewport(0, 3*256, 256, 256);
+      for(let i=0; i<256; i++) scene.add(gray_histogram[i]);
+      renderer.render(scene, camera);
+      for(let i=0; i<256; i++) scene.remove(gray_histogram[i]);
+      
+      //include equalized gray image
+      renderer.setViewport(256, 512, 256, 256);
+      scene.add(eq_gray_image);
+      renderer.render(scene, camera);
+      scene.remove(eq_gray_image);
+      
+      //include equalized gray histogram
+      renderer.setViewport(256, 3*256, 256, 256);
+      for(let i=0; i<256; i++) scene.add(eq_gray_histogram[i]);
+      renderer.render(scene, camera);
+      for(let i=0; i<256; i++) scene.remove(eq_gray_histogram[i]);
+      
+      //include color image
+	    renderer.setViewport(0,0, 256,256);
+      scene.add(color_image);
+      renderer.render(scene, camera);
+      scene.remove(color_image);
+      
+      //include red histogram
+      renderer.setViewport(0, 256, 128, 128);
+      for(let i=0; i<256; i++) scene.add(color_histogram[i]);
+      renderer.render(scene, camera);
+      for(let i=0; i<256; i++) scene.remove(color_histogram[i]);
+      //include green histogram
+      renderer.setViewport(128, 256, 128, 128);
+      for(let i=0; i<256; i++) scene.add(color_histogram[256*1 + i]);
+      renderer.render(scene, camera);
+      for(let i=0; i<256; i++) scene.remove(color_histogram[256*1 + i]);
+      //include blue histogram
+      renderer.setViewport(0, 256+128, 128, 128);
+      for(let i=0; i<256; i++) scene.add(color_histogram[256*2 + i]);
+      renderer.render(scene, camera);
+      for(let i=0; i<256; i++) scene.remove(color_histogram[256*2 + i]);
+      
+      //include equalized color image
+      renderer.setViewport(256, 0, 256, 256);
+      scene.add(eq_color_image);
+      renderer.render(scene, camera);
+      scene.remove(eq_color_image);
+      
+      //include equalized red histogram
+      renderer.setViewport(256, 256, 128, 128);
+      for(let i=0; i<256; i++) scene.add(eq_color_histogram[i]);
+      renderer.render(scene, camera);
+      for(let i=0; i<256; i++) scene.remove(eq_color_histogram[i]);
+      //include equalized green histogram
+      renderer.setViewport(128 + 256, 256, 128, 128);
+      for(let i=0; i<256; i++) scene.add(eq_color_histogram[256*1 + i]);
+      renderer.render(scene, camera);
+      for(let i=0; i<256; i++) scene.remove(eq_color_histogram[256*1 + i]);
+      //include equalized blue histogram
+      renderer.setViewport(256, 256+128, 128, 128);
+      for(let i=0; i<256; i++) scene.add(eq_color_histogram[256*2 + i]);
+      renderer.render(scene, camera);
+      for(let i=0; i<256; i++) scene.remove(eq_color_histogram[256*2 + i]);
+    }
+    else requestAnimationFrame(render);
+  }
+  render();
 }
