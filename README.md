@@ -1,6 +1,6 @@
 # MATA65 - Computação Gráfica 
 
-###### Este repositório contém a implementação das atividades pontuadas da disciplina referente ao semestre de 2017.1
+## Este repositório contém a implementação das atividades pontuadas da disciplina referente ao semestre de 2017.1
 
 * Atividade 1 - Geração do modelo de uma gota 
 * Atividade 2 - Deformações geométricas em objetos 3D (_Taper, Twist, Shear_)
